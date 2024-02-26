@@ -1,5 +1,7 @@
 import os
 import cv2
+import time
+import sys
 
 enhancer_folder = os.path.dirname(os.path.abspath(__file__))
 
@@ -7,93 +9,41 @@ enhancer_folder = os.path.dirname(os.path.abspath(__file__))
 image_path = os.path.join(enhancer_folder, 'test_images', 'bikes_col.png')
 
 save_name = 'bikes'
-save_folder = 'bikes'
 # --------------------------------------------------------------------------------
 
-resoult_path = os.path.join(enhancer_folder, 'resoult_images', save_folder)
-
+resoult_path = os.path.join(enhancer_folder, 'resoult_images')
 img = cv2.imread(image_path)
-
 sr = cv2.dnn_superres.DnnSuperResImpl_create()
 
-# EDSR x4:
+model_file_name = 'LapSRN_x4.pb'
+model_type = "lapsrn"
+model_increase = 4
 
-def edsr_2():
-    path = os.path.join(enhancer_folder, 'models', 'EDSR_x2.pb')
+is_running = True
+
+def model_function(is_running):
+    start_time = time.time()
+    path = os.path.join(enhancer_folder, 'models', model_file_name)
     sr.readModel(path)
-
-    sr.setModel("edsr", 2)
-
+    sr.setModel(model_type, model_increase)
     upscaled = sr.upsample(img)
-    cv2.imwrite(resoult_path + "/edsr2_" + save_name + ".png", upscaled)
 
-def edsr_4():
-    path = os.path.join(enhancer_folder, 'models', 'EDSR_x4.pb')
-    sr.readModel(path)
+    '''
+    while is_running == True:
+        sys.stdout.write('\rloading |')
+        time.sleep(0.5)
+        sys.stdout.write('\rloading /')
+        time.sleep(0.5)
+        sys.stdout.write('\rloading -')
+        time.sleep(0.5)
+        sys.stdout.write('\rloading \\')
+        time.sleep(0.5)
+    sys.stdout.write('\rDone!     ')
+    '''
 
-    sr.setModel("edsr", 4)
+    cv2.imwrite(resoult_path + "/" + model_type + str(model_increase) + "_" + save_name + ".png", upscaled)
+    is_running = False
+    end_time = time.time()
+    print("\nTime elapsed: " + "%.2f" % (end_time - start_time) + " sekund")
 
-    upscaled = sr.upsample(img)
-    cv2.imwrite(resoult_path + "/edsr4_" + save_name + ".png", upscaled)
-
-# ESPCN x4:
-
-def espcn_2():
-    path = os.path.join(enhancer_folder, 'models', 'ESPCN_x2.pb')
-    sr.readModel(path)
-
-    sr.setModel("espcn", 2)
-
-    upscaled = sr.upsample(img)
-    cv2.imwrite(resoult_path + '/espcn2_' + save_name + '.png', upscaled)
-
-def espcn_4():
-    path = os.path.join(enhancer_folder, 'models', 'ESPCN_x4.pb')
-    sr.readModel(path)
-
-    sr.setModel("espcn", 4)
-
-    upscaled = sr.upsample(img)
-    cv2.imwrite(resoult_path + '/espcn4_' + save_name + '.png', upscaled)
-
-# FSRCNN x4:
-
-def fsrcnn_2():
-    path = os.path.join(enhancer_folder, 'models', 'FSRCNN_x2.pb')
-    sr.readModel(path)
-
-    sr.setModel("fsrcnn", 2)
-
-    upscaled = sr.upsample(img)
-    cv2.imwrite(resoult_path + '/fsrcnn2_' + save_name + '.png', upscaled)
-
-def fsrcnn_4():
-    path = os.path.join(enhancer_folder, 'models', 'FSRCNN_x4.pb')
-    sr.readModel(path)
-
-    sr.setModel("fsrcnn", 4)
-
-    upscaled = sr.upsample(img)
-    cv2.imwrite(resoult_path + '/fsrcnn4_' + save_name + '.png', upscaled)
-
-# LapSRN x4:
-
-def lapsrn_2():
-    path = os.path.join(enhancer_folder, 'models', 'LapSRN_x2.pb')
-    sr.readModel(path)
-
-    sr.setModel("lapsrn", 2)
-
-    upscaled = sr.upsample(img)
-    cv2.imwrite(resoult_path + '/lapsrn2_' + save_name + '.png', upscaled)
-
-def lapsrn_4():
-    path = os.path.join(enhancer_folder, 'models', 'LapSRN_x4.pb')
-    sr.readModel(path)
-
-    sr.setModel("lapsrn", 4)
-
-    upscaled = sr.upsample(img)
-    cv2.imwrite(resoult_path + '/lapsrn4_' + save_name + '.png', upscaled)
-
-edsr_2()
+model_function(is_running)
