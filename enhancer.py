@@ -18,80 +18,82 @@ sr = cv2.dnn_superres.DnnSuperResImpl_create()
 
 # EDSR x4:
 
-# 2
-path = os.path.join(enhancer_folder, 'models', 'EDSR_x2.pb')
-sr.readModel(path)
+def edsr_2():
+    path = os.path.join(enhancer_folder, 'models', 'EDSR_x2.pb')
+    sr.readModel(path)
 
-sr.setModel("edsr", 2)
+    sr.setModel("edsr", 2)
 
-upscaled = sr.upsample(img)
-cv2.imwrite(resoult_path + "/edsr2_" + save_name + ".png", upscaled)
+    upscaled = sr.upsample(img)
+    cv2.imwrite(resoult_path + "/edsr2_" + save_name + ".png", upscaled)
 
-# x4
-path = os.path.join(enhancer_folder, 'models', 'EDSR_x4.pb')
-sr.readModel(path)
+def edsr_4():
+    path = os.path.join(enhancer_folder, 'models', 'EDSR_x4.pb')
+    sr.readModel(path)
 
-sr.setModel("edsr", 4)
+    sr.setModel("edsr", 4)
 
-upscaled = sr.upsample(img)
-cv2.imwrite(resoult_path + "/edsr4_" + save_name + ".png", upscaled)
+    upscaled = sr.upsample(img)
+    cv2.imwrite(resoult_path + "/edsr4_" + save_name + ".png", upscaled)
 
 # ESPCN x4:
 
-# 2
-path = os.path.join(enhancer_folder, 'models', 'ESPCN_x2.pb')
-sr.readModel(path)
+def espcn_2():
+    path = os.path.join(enhancer_folder, 'models', 'ESPCN_x2.pb')
+    sr.readModel(path)
 
-sr.setModel("espcn", 2)
+    sr.setModel("espcn", 2)
 
-upscaled = sr.upsample(img)
-cv2.imwrite(resoult_path + '/espcn2_' + save_name + '.png', upscaled)
+    upscaled = sr.upsample(img)
+    cv2.imwrite(resoult_path + '/espcn2_' + save_name + '.png', upscaled)
 
-# 4
-path = os.path.join(enhancer_folder, 'models', 'ESPCN_x4.pb')
-sr.readModel(path)
+def espcn_4():
+    path = os.path.join(enhancer_folder, 'models', 'ESPCN_x4.pb')
+    sr.readModel(path)
 
-sr.setModel("espcn", 4)
+    sr.setModel("espcn", 4)
 
-upscaled = sr.upsample(img)
-cv2.imwrite(resoult_path + '/espcn4_' + save_name + '.png', upscaled)
+    upscaled = sr.upsample(img)
+    cv2.imwrite(resoult_path + '/espcn4_' + save_name + '.png', upscaled)
 
 # FSRCNN x4:
 
-# 2
-path = os.path.join(enhancer_folder, 'models', 'FSRCNN_x2.pb')
-sr.readModel(path)
+def fsrcnn_2():
+    path = os.path.join(enhancer_folder, 'models', 'FSRCNN_x2.pb')
+    sr.readModel(path)
 
-sr.setModel("fsrcnn", 2)
+    sr.setModel("fsrcnn", 2)
 
-upscaled = sr.upsample(img)
-cv2.imwrite(resoult_path + '/fsrcnn2_' + save_name + '.png', upscaled)
+    upscaled = sr.upsample(img)
+    cv2.imwrite(resoult_path + '/fsrcnn2_' + save_name + '.png', upscaled)
 
-# 4
-path = os.path.join(enhancer_folder, 'models', 'FSRCNN_x4.pb')
-sr.readModel(path)
+def fsrcnn_4():
+    path = os.path.join(enhancer_folder, 'models', 'FSRCNN_x4.pb')
+    sr.readModel(path)
 
-sr.setModel("fsrcnn", 4)
+    sr.setModel("fsrcnn", 4)
 
-upscaled = sr.upsample(img)
-cv2.imwrite(resoult_path + '/fsrcnn4_' + save_name + '.png', upscaled)
+    upscaled = sr.upsample(img)
+    cv2.imwrite(resoult_path + '/fsrcnn4_' + save_name + '.png', upscaled)
 
 # LapSRN x4:
 
-# 2
-path = os.path.join(enhancer_folder, 'models', 'LapSRN_x2.pb')
-sr.readModel(path)
+def lapsrn_2():
+    path = os.path.join(enhancer_folder, 'models', 'LapSRN_x2.pb')
+    sr.readModel(path)
 
-sr.setModel("lapsrn", 2)
+    sr.setModel("lapsrn", 2)
 
-upscaled = sr.upsample(img)
-cv2.imwrite(resoult_path + '/lapsrn2_' + save_name + '.png', upscaled)
+    upscaled = sr.upsample(img)
+    cv2.imwrite(resoult_path + '/lapsrn2_' + save_name + '.png', upscaled)
 
-# 4
-path = os.path.join(enhancer_folder, 'models', 'LapSRN_x4.pb')
-sr.readModel(path)
+def lapsrn_4():
+    path = os.path.join(enhancer_folder, 'models', 'LapSRN_x4.pb')
+    sr.readModel(path)
 
-sr.setModel("lapsrn", 4)
+    sr.setModel("lapsrn", 4)
 
-upscaled = sr.upsample(img)
-cv2.imwrite(resoult_path + '/lapsrn4_' + save_name + '.png', upscaled)
+    upscaled = sr.upsample(img)
+    cv2.imwrite(resoult_path + '/lapsrn4_' + save_name + '.png', upscaled)
+
+edsr_2()
