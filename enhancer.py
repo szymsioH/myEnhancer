@@ -6,8 +6,10 @@ import itertools
 import threading
 from tkinter import Tk
 from tkinter.filedialog import askopenfilename
+from pathlib import Path
 import shutil
 import filetype
+import glob
 
 
 enhancer_folder = os.path.dirname(os.path.abspath(__file__))
@@ -16,10 +18,15 @@ enhancer_folder = os.path.dirname(os.path.abspath(__file__))
 Tk().withdraw()
 filepath = askopenfilename()
 
-if filetype.is_image(filepath): #sprawdzenie czy format pliku jest poprawny
-    print("Image Loaded")
+if filetype.is_image(filepath):#sprawdzenie czy format pliku jest poprawny
+    ext_img = filetype.guess_extension(filepath)
+    if ext_img == 'png' or ext_img == 'jpg' or ext_img == 'jpeg':
+        print(" === IMAGE LOADED ===")
+    else:
+        print(" === UNSUPPORTED FILE TYPE (" + ext_img + ") === ")
+        sys.exit()
 else:
-    print("Invalid File Type")
+    print(" === ERROR: INVALID FILE TYPE === ")
     sys.exit()
 
 def find_idx(str, ch):
@@ -34,12 +41,14 @@ storage_path = os.path.join(enhancer_folder, 'test_images')
 shutil.copy2(filepath, storage_path + '/' + filename)
 
 image_path = os.path.join(enhancer_folder, 'test_images', filename)
-save_name = 'enhanced_' + filename
-# --------------------------------------------------------------------------------
+save_name = filename
 
 resoult_path = os.path.join(enhancer_folder, 'resoult_images')
 img = cv2.imread(image_path)
 sr = cv2.dnn_superres.DnnSuperResImpl_create()
+
+downloads_path = str(Path.home() / "Downloads")
+# --------------------------------------------------------------------------------
 
 model_file_name = '.'
 model_type = "."
@@ -89,7 +98,7 @@ def input_enhance():
 
 def text_menu():
     global model_type, input_choice, if_again, exit_flag
-    print("Wybierz model: \n 1. LapSRN - wybierz 1 \n 2. FSRCNN - wybierz 2 \n 3. ESPCN - wybierz 3 \n 4. EDSR - wybierz 4 \n exit - type exit \n")
+    print("Wybierz model: \n 1. LapSRN (x2/x4/x8) - wybierz 1 \n 2. FSRCNN (x2/x3/x4) - wybierz 2 \n 3. ESPCN (x2/x3/x4) - wybierz 3 \n 4. EDSR (x2/x3/x4) - wybierz 4 \n exit - type exit \n")
     input_choice = input("Wybrany model: ")
     print("Wybierz powiększenie:")
     if input_choice == "1" or input_choice == "lapsrn":
@@ -155,5 +164,24 @@ if __name__ == '__main__':
         t2.join()
         t1.join()
         if_again = input("Again? (Y/N)\n ")
+    if if_again != "Y" or if_again == "y":
+        resoult_img_list = glob.glob(resoult_path + "\\*")
+        resoult_name_list = [0] * len(resoult_img_list)
+        for i in range(len(resoult_img_list)):
+            for idx in find_idx(resoult_img_list[i], '\\'):
+                abba = resoult_img_list[i]
+                aba = '\\'
+                max_idx = max(idx)
+                resoult_name_list[i] = resoult_img_list[i][max_idx + 1:]
+
+        print("\nCreated images:\n" + str(resoult_name_list))
+        if_download = input("\nDo you want to download enhanced images? (Y/N): \n ")
+        for i in range(len(resoult_img_list)):
+            if if_download == "Y" or if_download == "y":
+                shutil.copy2(resoult_img_list[i], downloads_path)
+            else:
+                sys.stdout.flush()
+            os.remove(resoult_img_list[i])
+    os.remove(image_path)
 
 
