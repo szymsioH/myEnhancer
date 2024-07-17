@@ -18,19 +18,26 @@ enhancer_folder = os.path.dirname(os.path.abspath(__file__))
 Tk().withdraw()
 filepath = askopenfilename()
 
-if filetype.is_image(filepath):#sprawdzenie czy format pliku jest poprawny
+def find_idx(str, ch):
+    yield [i for i, c in enumerate(str) if c == ch]
+
+
+if filetype.is_image(filepath):  #sprawdzenie czy format pliku jest poprawny
     ext_img = filetype.guess_extension(filepath)
-    if ext_img == 'png' or ext_img == 'jpg' or ext_img == 'jpeg':
+    for idx in find_idx(filepath, '.'):
+        max_dot_idx = max(idx)
+        ext_manual = filepath[max_dot_idx + 1:]
+    if (ext_img == 'png' or ext_img == 'jpg' or ext_img == 'jpeg') and ext_manual == ext_img:
         print(" === IMAGE LOADED ===")
     else:
-        print(" === UNSUPPORTED FILE TYPE (" + ext_img + ") === ")
+        print(" === UNSUPPORTED FILE TYPE (" + ext_manual + ") === ")
+        os.remove(filepath)
         sys.exit()
 else:
     print(" === ERROR: INVALID FILE TYPE === ")
+    os.remove(filepath)
     sys.exit()
 
-def find_idx(str, ch):
-    yield [i for i, c in enumerate(str) if c == ch]
 
 for idx in find_idx(filepath, '/'):
     max_idx = max(idx)
@@ -54,7 +61,7 @@ model_file_name = '.'
 model_type = "."
 model_increase = 0
 input_choice = "."
-is_running = False
+is_running = True
 if_again = "Y"
 exit_flag = False
 
@@ -149,8 +156,6 @@ def animate():
         sys.stdout.flush()
     sys.stdout.write('\rDone!     ')
 
-#def start_generating():
-#    global is_running, model_increase, input_choice, model_type, model_file_name, if_again
 
 if __name__ == '__main__':
     while if_again == "Y" or if_again == "y":
@@ -158,24 +163,26 @@ if __name__ == '__main__':
         if exit_flag:
             break
         t1 = threading.Thread(target=model_function)
+        is_running = False
         t2 = threading.Thread(target=animate)
         t2.start()
         t1.start()
         t2.join()
         t1.join()
         if_again = input("Again? (Y/N)\n ")
-    if if_again != "Y" or if_again == "y":
+
+    if if_again != "Y" or if_again != "y":
         resoult_img_list = glob.glob(resoult_path + "\\*")
+        if len(resoult_img_list) == 0:
+            sys.exit()
         resoult_name_list = [0] * len(resoult_img_list)
         for i in range(len(resoult_img_list)):
             for idx in find_idx(resoult_img_list[i], '\\'):
-                abba = resoult_img_list[i]
-                aba = '\\'
                 max_idx = max(idx)
                 resoult_name_list[i] = resoult_img_list[i][max_idx + 1:]
-
         print("\nCreated images:\n" + str(resoult_name_list))
         if_download = input("\nDo you want to download enhanced images? (Y/N): \n ")
+
         for i in range(len(resoult_img_list)):
             if if_download == "Y" or if_download == "y":
                 shutil.copy2(resoult_img_list[i], downloads_path)
